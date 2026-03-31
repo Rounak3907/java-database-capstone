@@ -1,11 +1,19 @@
 package com.project.back_end.models;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Future;
-import java.time.LocalDateTime;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+
 
 @Entity
 public class Appointment {
@@ -14,45 +22,24 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Doctor is required")
     @ManyToOne
-    @JoinColumn(name = "doctor_id")
+    @NotNull(message = "Doctor must be assigned to the appointment")
     private Doctor doctor;
 
-    @NotNull(message = "Patient is required")
     @ManyToOne
-    @JoinColumn(name = "patient_id")
+    @NotNull(message = "Patient must be assigned to the appointment")
     private Patient patient;
 
-    @NotNull(message = "Appointment time is required")
     @Future(message = "Appointment time must be in the future")
-    private LocalDateTime appointmentTime;
+    private LocalDateTime appointmentTime;  // The time when the appointment is scheduled
 
-    @Size(max = 500, message = "Reason for visit is too long")
-    private String reasonForVisit;
-
-    @NotNull(message = "Status is required")
-    private int status; // 0 for Scheduled, 1 for Completed
-
-    // Default Constructor
-    public Appointment() {}
-
-    // Helper Methods (Marked @Transient so they aren't persisted)
-    
     @Transient
     public LocalDateTime getEndTime() {
-        return (appointmentTime != null) ? appointmentTime.plusHours(1) : null;
+        return appointmentTime != null ? appointmentTime.plusHours(1) : null;
     }
-
-    @Transient
-    public LocalDate getAppointmentDate() {
-        return (appointmentTime != null) ? appointmentTime.toLocalDate() : null;
-    }
-
-    @Transient
-    public LocalTime getAppointmentTimeOnly() {
-        return (appointmentTime != null) ? appointmentTime.toLocalTime() : null;
-    }
+    
+    @NotNull(message = "Status cannot be null")
+    private int status;  // Status can be "Scheduled:0", "Completed:1"
 
     // Getters and Setters
     public Long getId() {
@@ -94,4 +81,15 @@ public class Appointment {
     public void setStatus(int status) {
         this.status = status;
     }
+
+     // Getter for LocalDate (only the date part, no time)
+    public LocalDate getAppointmentDate() {
+        return appointmentTime != null ? appointmentTime.toLocalDate() : null;
+    }
+
+    // Getter for LocalTime (only the time part, no date)
+    public LocalTime getAppointmentTimeOnly() {
+        return appointmentTime != null ? appointmentTime.toLocalTime() : null;  // Extracts only the time
+    }
 }
+

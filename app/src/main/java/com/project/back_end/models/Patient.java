@@ -1,8 +1,14 @@
 package com.project.back_end.models;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Patient {
@@ -11,35 +17,25 @@ public class Patient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Name is required")
-    @Size(min = 3, max = 100, message = "Name must be between 3 and 100 characters")
+    @NotNull(message = "Patient name cannot be null")
+    @Size(min = 3, max = 100, message = "Patient name should be between 3 and 100 characters")
     private String name;
 
-    @NotNull(message = "Email is required")
-    @Email(message = "Must match email format")
+    @NotNull(message = "Email cannot be null")
+    @Email(message = "Invalid email format")
     private String email;
 
-    @NotNull(message = "Password is required")
-    @Size(min = 6, message = "Password must be at least 6 characters")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @NotNull(message = "Password cannot be null")
+    @Size(min = 6, message = "Password must be at least 6 characters long")
     private String password;
 
-    @Past(message = "Date of birth must be in the past")
-    private LocalDate dateOfBirth;
-
-    @NotNull(message = "Phone number is required")
-    @Pattern(regexp = "\\d{10}", message = "Phone number must be 10 digits")
+    @NotNull(message = "Phone number cannot be null")
+    @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must be 10 digits long")
     private String phone;
 
-    @Pattern(regexp = "\\d{10}", message = "Emergency contact must be 10 digits")
-    private String emergencyContact;    
-
-    @NotNull(message = "Address is required")
-    @Size(max = 255, message = "Address cannot exceed 255 characters")
+    @NotNull(message = "Address cannot be null")
+    @Size(max = 255, message = "Address should not exceed 255 characters")
     private String address;
-
-    // Default Constructor
-    public Patient() {}
 
     // Getters and Setters
     public Long getId() {
@@ -74,31 +70,14 @@ public class Patient {
         this.password = password;
     }
 
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    
     public String getPhone() {
         return phone;
     }
-    
+
     public void setPhone(String phone) {
         this.phone = phone;
     }
-    
-    public String getEmergencyContact() {
-        return emergencyContact;
-    }
 
-    public void setEmergencyContact(String emergencyContact) {
-        this.emergencyContact = emergencyContact;
-    }
-    
     public String getAddress() {
         return address;
     }
@@ -106,4 +85,5 @@ public class Patient {
     public void setAddress(String address) {
         this.address = address;
     }
+
 }
