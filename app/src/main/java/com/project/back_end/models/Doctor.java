@@ -33,6 +33,9 @@ public class Doctor {
     @Pattern(regexp = "\\d{10}", message = "Phone number must be 10 digits")
     private String phone;
 
+    @Min(value = 0, message = "Experience cannot be negative")
+    private int yearsOfExperience;
+
     @ElementCollection
     private List<String> availableTimes;
 
@@ -86,6 +89,13 @@ public class Doctor {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public int getYearsOfExperience() { 
+        return yearsOfExperience; 
+    }
+    public void setYearsOfExperience(int yearsOfExperience) { 
+        this.yearsOfExperience = yearsOfExperience; 
     }
 
     public List<String> getAvailableTimes() {

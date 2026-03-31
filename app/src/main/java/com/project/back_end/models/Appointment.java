@@ -28,6 +28,9 @@ public class Appointment {
     @Future(message = "Appointment time must be in the future")
     private LocalDateTime appointmentTime;
 
+    @Size(max = 500, message = "Reason for visit is too long")
+    private String reasonForVisit;
+
     @NotNull(message = "Status is required")
     private int status; // 0 for Scheduled, 1 for Completed
 

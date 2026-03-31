@@ -24,9 +24,15 @@ public class Patient {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    @Past(message = "Date of birth must be in the past")
+    private LocalDate dateOfBirth;
+
     @NotNull(message = "Phone number is required")
     @Pattern(regexp = "\\d{10}", message = "Phone number must be 10 digits")
     private String phone;
+
+    @Pattern(regexp = "\\d{10}", message = "Emergency contact must be 10 digits")
+    private String emergencyContact;    
 
     @NotNull(message = "Address is required")
     @Size(max = 255, message = "Address cannot exceed 255 characters")
@@ -68,14 +74,31 @@ public class Patient {
         this.password = password;
     }
 
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    
     public String getPhone() {
         return phone;
     }
-
+    
     public void setPhone(String phone) {
         this.phone = phone;
     }
+    
+    public String getEmergencyContact() {
+        return emergencyContact;
+    }
 
+    public void setEmergencyContact(String emergencyContact) {
+        this.emergencyContact = emergencyContact;
+    }
+    
     public String getAddress() {
         return address;
     }
