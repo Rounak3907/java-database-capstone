@@ -5,13 +5,13 @@ function selectRole(role) {
   const token = localStorage.getItem('token');
   if (role === "admin") {
     if (token) {
-      window.location.href = `http://localhost:8080/adminDashboard/${token}`;
+      window.location.href = `http://rounaksingh3-8080.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/adminDashboard/${token}`;
     }
   } if (role === "patient") {
     window.location.href = "/pages/patientDashboard.html";
   } else if (role === "doctor") {
     if (token) {
-      window.location.href = `http://localhost:8080/doctorDashboard/${token}`;
+      window.location.href = `http://rounaksingh3-8080.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/doctorDashboard/${token}`;
     } else if (role === "loggedPatient") {
       window.location.href = "loggedPatientDashboard.html";
     }
