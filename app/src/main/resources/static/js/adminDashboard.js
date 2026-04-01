@@ -1,73 +1,113 @@
-import { openModal } from '../components/modals.js';
-import { getDoctors, filterDoctors, saveDoctor } from './services/doctorServices.js';
+// adminDashboard.js
+import { openModal } from './components/modals.js';
+import { getDoctors  , filterDoctors , saveDoctor } from './services/doctorServices.js';
 import { createDoctorCard } from './components/doctorCard.js';
+document.getElementById('addDocBtn').addEventListener('click', () => {
+  openModal('addDoctor');
+});
 
-window.onload = () => {
-    // Event Binding for Add Doctor
-    const addDocBtn = document.getElementById('addDocBtn');
-    if (addDocBtn) {
-        addDocBtn.addEventListener('click', () => openModal('addDoctor'));
-    }
+document.addEventListener("DOMContentLoaded", () => {
+  loadDoctorCards();
+});
 
-    // Search and Filter Listeners
-    document.getElementById("searchBar").addEventListener("input", filterDoctorsOnChange);
-    document.getElementById("filterTime").addEventListener("change", filterDoctorsOnChange);
-    document.getElementById("filterSpecialty").addEventListener("change", filterDoctorsOnChange);
+export function loadDoctorCards() {
+  getDoctors()
+    .then(doctors => {
+      const contentDiv = document.getElementById("content");
+      contentDiv.innerHTML = ""; 
 
-    loadDoctorCards();
-};
-
-async function loadDoctorCards() {
-    const doctors = await getDoctors();
-    renderDoctorCards(doctors);
-}
-
-async function filterDoctorsOnChange() {
-    const name = document.getElementById("searchBar").value;
-    const time = document.getElementById("filterTime").value;
-    const specialty = document.getElementById("filterSpecialty").value;
-
-    const doctors = await filterDoctors(name, time, specialty);
-    renderDoctorCards(doctors);
-}
-
-function renderDoctorCards(doctors) {
-    const contentDiv = document.getElementById("content");
-    contentDiv.innerHTML = ""; 
-
-    if (doctors.length === 0) {
-        contentDiv.innerHTML = "<p>No doctors found.</p>";
-        return;
-    }
-
-    doctors.forEach(doc => {
-        const card = createDoctorCard(doc);
+      doctors.forEach(doctor => {
+        const card = createDoctorCard(doctor);
         contentDiv.appendChild(card);
+      });
+    })
+    .catch(error => {
+      console.error(" Failed to load doctors:", error);
     });
 }
 
-// Global function for the "Add Doctor" form submission
-window.adminAddDoctor = async function () {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        alert("Session expired. Please login again.");
-        return;
-    }
+document.getElementById("searchBar").addEventListener("input", filterDoctorsOnChange);
+document.getElementById("filterTime").addEventListener("change", filterDoctorsOnChange);
+document.getElementById("filterSpecialty").addEventListener("change", filterDoctorsOnChange);
 
-    const doctorData = {
-        name: document.getElementById('docName').value,
-        specialty: document.getElementById('docSpecialty').value,
-        email: document.getElementById('docEmail').value,
-        password: document.getElementById('docPassword').value,
-        mobileNo: document.getElementById('docMobile').value,
-        availabilityTime: document.getElementById('docTime').value
-    };
+function filterDoctorsOnChange() {
+  const searchBar = document.getElementById("searchBar").value.trim(); 
+  const filterTime = document.getElementById("filterTime").value;  
+  const filterSpecialty = document.getElementById("filterSpecialty").value;  
 
-    const response = await saveDoctor(doctorData, token);
-    if (response.success) {
-        alert("Doctor added successfully!");
-        location.reload(); // Refresh list
-    } else {
-        alert("Error: " + response.message);
-    }
-};
+  
+  const name = searchBar.length > 0 ? searchBar : null;  
+  const time = filterTime.length > 0 ? filterTime : null;
+  const specialty = filterSpecialty.length > 0 ? filterSpecialty : null;
+
+  filterDoctors(name , time ,specialty)
+    .then(response => {
+      const doctors = response.doctors;
+      const contentDiv = document.getElementById("content");
+      contentDiv.innerHTML = ""; 
+
+      if (doctors.length > 0) {
+        console.log(doctors);
+        doctors.forEach(doctor => {
+          const card = createDoctorCard(doctor);
+          contentDiv.appendChild(card);
+        });
+      } else {
+        contentDiv.innerHTML = "<p>No doctors found with the given filters.</p>";
+        console.log("Nothing");
+      }
+    })
+    .catch(error => {
+      console.error(" Failed to filter doctors:", error);
+      alert("❌ An error occurred while filtering doctors.");
+    });
+}
+
+export function renderDoctorCards(doctors) {
+  const contentDiv = document.getElementById("content");
+      contentDiv.innerHTML = ""; 
+
+      doctors.forEach(doctor => {
+        const card = createDoctorCard(doctor);
+        contentDiv.appendChild(card);
+      });
+   
+}
+
+
+window.adminAddDoctor = async function() {
+  const name = document.getElementById('doctorName').value;
+        const specialty = document.getElementById('specialization').value;
+        const email = document.getElementById('doctorEmail').value;
+        const password = document.getElementById('doctorPassword').value;
+        const phone = document.getElementById('doctorPhone').value;
+        const checkboxes = document.querySelectorAll('input[name="availability"]:checked');
+        const availableTimes = Array.from(checkboxes).map(cb => cb.value);
+  
+        const token = localStorage.getItem("token");
+        if (!token) {
+          alert("❌ Token expired or not found. Please log in again.");
+          return;
+        }
+  
+        const doctor = {
+          name,
+          specialty,
+          email,
+          password,
+          phone,
+          availableTimes
+        };
+  
+        const { success, message } = await saveDoctor(doctor, token);
+  
+        if (success) {
+          alert(message);
+          document.getElementById("modal").style.display = "none";
+          window.location.reload();
+  
+        } else {
+          alert("❌ Error: " + message);
+        }
+      
+}
