@@ -13,7 +13,6 @@
     <script th:src="@{/js/util.js}" defer></script>
     <script th:src="@{/js/components/header.js}" defer></script>
     <script th:src="@{/js/components/footer.js}" defer></script>
-    <script th:src="@{/js/components/patientRows.js}" defer></script>
 </head>
 <body>
     <div class="container">
@@ -24,7 +23,7 @@
                 <div class="filter-container">
                     <input type="text" id="searchBar" placeholder="Search patients..." />
                     <div class="date-filters">
-                        <button id="todayAppts" class="adminBtn">Today's Appointments</button>
+                        <button id="todayButton" class="adminBtn">Today's Appointments</button>
                         <input type="date" id="datePicker" />
                     </div>
                 </div>
@@ -49,6 +48,7 @@
     </div>
 
     <script type="module" src="../js/services/patientServices.js" defer></script>
-    <script type="module" src="../js/services/doctorDashboard.js" defer></script>
+    <script type="module" src="../js/doctorDashboard.js" defer></script>
+    <script type="module" src="../js/components/patientRows.js" defer></script>
 </body>
 </html>

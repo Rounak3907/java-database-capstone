@@ -13,11 +13,17 @@ document.getElementById("searchBar").addEventListener("input", (e) => {
 });
 
 // Event Listener: Today's Appointments Button
-document.getElementById("todayButton").addEventListener("click", () => {
-  selectedDate = new Date().toISOString().split('T')[0];
-  document.getElementById("datePicker").value = selectedDate; // Update date picker too
-  loadAppointments();
-});
+const todayBtn = document.getElementById("todayButton");
+if (todayBtn) {
+  todayBtn.addEventListener("click", () => {
+    selectedDate = new Date().toISOString().split('T')[0];
+    const datePicker = document.getElementById("datePicker");
+    if (datePicker) datePicker.value = selectedDate;
+    loadAppointments();
+  });
+} else {
+  console.warn("Element 'todayButton' not found in HTML.");
+}
 
 // Event Listener: Date Picker
 document.getElementById("datePicker").addEventListener("change", (e) => {
